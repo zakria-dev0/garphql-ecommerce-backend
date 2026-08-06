@@ -4,7 +4,7 @@ import pandas as pd
 
 logger = logging.getLogger("etl")
 
-US_FIXED_HOLIDAYS = {(1, 1), (7, 4), (12, 25)}  # simplified: New Year's, July 4th, Christmas
+US_FIXED_HOLIDAYS = {(1, 1), (7, 4), (12, 25)}
 
 
 def join_products_categories(products_df: pd.DataFrame, categories_df: pd.DataFrame) -> pd.DataFrame:
