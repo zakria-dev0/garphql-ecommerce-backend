@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+.claude/
+.venv/
+venv/
+ecommerce_data/
+*.egg-info/
+.pytest_cache/
+.env
+postgres_data/
+.flyte/
+local_flytekit/
+*.log
+.DS_Store
