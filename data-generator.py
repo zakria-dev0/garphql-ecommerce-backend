@@ -136,8 +136,6 @@ def generate_customers():
             'country': 'US',
             'phone': fake.phone_number(),
             'registration_date': registration_datetime.strftime('%Y-%m-%d %H:%M:%S'),
-            # faker's date_time_between needs a datetime object (or a relative string
-            # like "-30y"), not an arbitrary formatted date string, hence the object here.
             'last_login': fake.date_time_between(start_date=registration_datetime, end_date=NOW).strftime('%Y-%m-%d %H:%M:%S')
         }
         customers.append(customer)
@@ -157,9 +155,8 @@ def generate_orders_and_items(customers_df, products_df):
     order_items = []
     
     # Prepare distribution: some customers make more orders than others
-    # Follow a Pareto distribution (80/20 rule)
     orders_per_customer = np.random.pareto(1.5, len(customer_ids)) + 1
-    orders_per_customer = np.minimum(orders_per_customer, 50)  # Cap at 50 orders per customer
+    orders_per_customer = np.minimum(orders_per_customer, 50)
     orders_per_customer = orders_per_customer.astype(int)
     
     # Mapping of customers to their order counts
@@ -172,7 +169,6 @@ def generate_orders_and_items(customers_df, products_df):
     for customer_id in tqdm(customer_ids):
         num_orders = customer_order_counts[customer_id]
         
-        # Skip some customers (those who registered but never ordered)
         if random.random() < 0.05:  # 5% of customers have no orders
             continue
             
@@ -180,7 +176,6 @@ def generate_orders_and_items(customers_df, products_df):
         customer_reg_date = pd.to_datetime(customers_df[customers_df['customer_id'] == customer_id]['registration_date'].iloc[0])
         
         for _ in range(num_orders):
-            # Order date between registration and now
             days_since_reg = (NOW - customer_reg_date).days
             if days_since_reg <= 0:
                 continue  # Skip if registration date is in the future (shouldn't happen but just in case)
@@ -234,7 +229,6 @@ def generate_orders_and_items(customers_df, products_df):
                 'total_amount': 0  # Will be calculated based on items
             }
             
-            # Add order items (random number between 1 and 5)
             num_items = random.choices([1, 2, 3, 4, 5], weights=[0.5, 0.25, 0.15, 0.07, 0.03])[0]
             order_products = random.sample(product_ids, num_items)
             
@@ -294,7 +288,6 @@ def generate_orders_and_items(customers_df, products_df):
 def create_sample_datasets(categories_df, products_df, customers_df, orders_df, order_items_df):
     print("Creating sample datasets...")
     
-    # Sample sizes for development (about 0.1% of full size)
     sample_categories = categories_df
     sample_products = products_df.sample(min(1000, len(products_df)))
     sample_customers = customers_df.sample(min(1000, len(customers_df)))
