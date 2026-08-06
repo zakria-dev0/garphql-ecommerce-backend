@@ -27,7 +27,7 @@ def _run_stage(stage_name: str, fn, *args, **kwargs):
     start = time.monotonic()
     try:
         result = fn(*args, **kwargs)
-    except Exception as exc:  # noqa: BLE001 - intentional: wrap with stage context
+    except Exception as exc:
         logger.exception("Stage '%s' failed", stage_name)
         raise ETLStageError(stage_name, exc) from exc
     logger.info("Finished stage: %s (%.2fs)", stage_name, time.monotonic() - start)
